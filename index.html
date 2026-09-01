@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#e9f3ff" />
+  <title>Stampede</title>
+  <meta name="description" content="You're the car now. Hop across stampeding lanes of chickens, cows, and elephants in this reverse road-crossing game." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='26' width='52' height='20' rx='6' fill='%23e63946'/%3E%3Crect x='16' y='16' width='30' height='16' rx='5' fill='%23e63946'/%3E%3Crect x='20' y='19' width='22' height='9' rx='3' fill='%23a9dcf5'/%3E%3Ccircle cx='18' cy='47' r='7' fill='%231d1d2b'/%3E%3Ccircle cx='46' cy='47' r='7' fill='%231d1d2b'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc300" stroke="#1d1d2b" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="#c98f00" stroke-width="2"/><rect x="10.6" y="8" width="2.8" height="8" rx="1" fill="#c98f00"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 13l1.6-4.2A2 2 0 0 1 7.5 7.5h9a2 2 0 0 1 1.9 1.3L20 13v4a1 1 0 0 1-1 1h-1.2a1.8 1.8 0 0 1-3.6 0H9.8a1.8 1.8 0 0 1-3.6 0H5a1 1 0 0 1-1-1z" fill="currentColor"/><path d="M7 12.5h10" stroke="#fff6e5" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="18" r="1.4" fill="#fff6e5"/><circle cx="16" cy="18" r="1.4" fill="#fff6e5"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 6H4.5a.5.5 0 0 0-.5.5C4 9.5 5.5 11 8 11.5M17 6h2.5a.5.5 0 0 1 .5.5c0 3-1.5 4.5-4 5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 14v3M8 20h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 3l1.8 1.2 2.1-.6 1.2 1.9 2.1.7v2.2l1.6 1.5-1 2 .6 2.1-1.9 1.2-.7 2.1h-2.2l-1.5 1.6-2-1-2.1.6-1.2-1.9-2.1-.7v-2.2L3.2 15l1-2-.6-2.1L5.5 9.7l.7-2.1h2.2L9.9 6z" fill="currentColor"/><circle cx="12" cy="12" r="3.2" fill="#fff6e5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-crate" viewBox="0 0 24 24"><path d="M3 8l9-4 9 4v9l-9 4-9-4z" fill="currentColor"/><path d="M3 8l9 4 9-4M12 12v9" stroke="#fff6e5" stroke-width="1.8"/><path d="M9 6.5l6 2.6" stroke="#fff6e5" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrows" viewBox="0 0 24 24"><path d="M12 3l3 3h-2v4H9V6H7zM12 21l-3-3h2v-4h2v4h2zM3 12l3-3v2h4v2H6v2zM21 12l-3 3v-2h-4v-2h4V9z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div id="ui">
+    <!-- Title -->
+    <section id="title" class="screen">
+      <div class="badges">
+        <div class="badge"><svg class="ic"><use href="#i-coin"/></svg><span data-coins>0</span></div>
+        <div class="badge"><svg class="ic"><use href="#i-trophy"/></svg><span data-best>0</span></div>
+      </div>
+      <div class="hero">
+        <div class="hero-top">
+          <div class="sticker">you're the car now</div>
+          <h1 class="logo"><span>STAM</span><span>PEDE</span></h1>
+          <p class="tag">Hop the roads. Dodge the herds. Do not idle.</p>
+        </div>
+        <div class="hero-spacer"></div>
+        <button id="btn-play" class="btn primary big">Drive</button>
+        <p class="hint"><svg class="ic"><use href="#i-arrows"/></svg> arrows, WASD, or swipe</p>
+      </div>
+      <nav class="dock">
+        <button class="dock-btn" data-open="shop"><svg class="ic"><use href="#i-car"/></svg><span>Garage</span></button>
+        <button class="dock-btn" data-open="scores"><svg class="ic"><use href="#i-trophy"/></svg><span>Scores</span></button>
+        <button class="dock-btn" data-open="settings"><svg class="ic"><use href="#i-gear"/></svg><span>Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- HUD -->
+    <section id="hud" class="screen" hidden>
+      <div class="hud-score"><div id="hud-score">0</div><div id="hud-best" class="hud-best"></div></div>
+      <div id="hud-coin-wrap" class="badge hud-coins"><svg class="ic"><use href="#i-coin"/></svg><span id="hud-coins">0</span></div>
+    </section>
+
+    <!-- Game over -->
+    <section id="over" class="screen" hidden>
+      <div class="panel over-panel">
+        <div id="over-record" class="record" hidden>New record</div>
+        <h2 id="over-title">Flattened</h2>
+        <p id="over-sub" class="muted">A cow had the right of way.</p>
+        <div class="over-score"><div id="over-score">0</div><div class="over-meta"><span>best <b id="over-best">0</b></span><span class="coin-inline"><svg class="ic"><use href="#i-coin"/></svg><b id="over-coins">+0</b></span></div></div>
+        <div id="over-rank" class="rank-pill" hidden></div>
+        <div id="over-sign" hidden class="sign-wrap"><form id="sign-form" class="sign"><input id="sign-name" maxlength="12" placeholder="Sign your record" autocomplete="off"><button class="btn small" type="submit">Sign</button></form></div>
+        <div class="row">
+          <button id="btn-again" class="btn primary big">Drive again</button>
+        </div>
+        <div class="row">
+          <button class="btn ghost" data-open="shop"><svg class="ic"><use href="#i-car"/></svg> Garage</button>
+          <button class="btn ghost" data-open="scores"><svg class="ic"><use href="#i-trophy"/></svg> Scores</button>
+          <button id="btn-home" class="btn ghost">Title</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modals -->
+    <div id="scrim" hidden></div>
+
+    <section id="shop" class="modal" hidden>
+      <header class="modal-head"><h2><svg class="ic"><use href="#i-car"/></svg> Garage</h2><div class="badge"><svg class="ic"><use href="#i-coin"/></svg><span data-coins>0</span></div><button class="icon-btn" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></header>
+      <div class="modal-body">
+        <div id="shop-showcase" class="showcase">
+          <canvas id="preview-canvas"></canvas>
+          <div class="showcase-info">
+            <h3 id="shop-name">Runabout</h3>
+            <p id="shop-desc" class="muted">Dependable. Slightly dented.</p>
+            <button id="shop-action" class="btn primary">Drive it</button>
+          </div>
+        </div>
+        <div class="crate">
+          <div class="crate-text"><b>Mystery crate</b><span id="crate-left" class="muted">19 left to find</span></div>
+          <button id="btn-crate" class="btn gold"><svg class="ic"><use href="#i-crate"/></svg> Open for <b class="coin-inline">100</b></button>
+        </div>
+        <div id="shop-grid" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="scores" class="modal" hidden>
+      <header class="modal-head"><h2><svg class="ic"><use href="#i-trophy"/></svg> Hall of Hops</h2><button class="icon-btn" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></header>
+      <div class="modal-body">
+        <div class="stats"><div><b id="stat-runs">0</b><span>runs</span></div><div><b id="stat-coins">0</b><span>coins found</span></div><div><b id="stat-cars">1/20</b><span>garage</span></div></div>
+        <p id="scores-empty" class="muted empty">No runs yet. The chickens are waiting.</p>
+        <table class="scores"><tbody id="scores-body"></tbody></table>
+      </div>
+    </section>
+
+    <section id="settings" class="modal narrow" hidden>
+      <header class="modal-head"><h2><svg class="ic"><use href="#i-gear"/></svg> Settings</h2><button class="icon-btn" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></header>
+      <div class="modal-body">
+        <label class="toggle"><span>Music</span><input type="checkbox" id="set-music"><i></i></label>
+        <label class="toggle"><span>Sound effects</span><input type="checkbox" id="set-sfx"><i></i></label>
+        <label class="field"><span>Driver name</span><input id="set-name" maxlength="12" placeholder="Anonymous driver" autocomplete="off"></label>
+        <button id="btn-reset" class="btn danger">Reset all progress</button>
+        <p class="muted tiny">Saved on this device. Soundtrack composed with ElevenLabs.</p>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
