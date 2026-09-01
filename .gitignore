@@ -5,3 +5,4 @@ dist
 scripts/gen-audio.log
 .DS_Store
 shots
+.vercel

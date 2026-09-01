@@ -36,5 +36,5 @@ Open http://localhost:4500. Arrows / WASD / space to hop, or swipe and tap on a 
 npm run build
 ```
 
-Static output lands in `dist/` with relative asset paths, so it deploys to GitHub Pages,
+Hosted on Vercel (`vercel --prod` from this directory). Static output lands in `dist/` with relative asset paths, so it also deploys to GitHub Pages,
 Vercel, Netlify or any static host as-is.
